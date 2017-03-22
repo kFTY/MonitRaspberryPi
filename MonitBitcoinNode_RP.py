@@ -116,13 +116,13 @@ def checkstat():
 # in case fail: notify me
 # if running but off-sync over 3 blocks:
         diff = blockNumberCli - blockNumber
-            if diff > 3:
-                stat = "Bitcoin node offSync %i blocks" % diff
-                push_to_phone(stat)
-                print (stat)
-            else:
-                stat = "Bitcoin node Running OK, offset %i block" % diff
-                print (stat)
+        if diff > 3:
+            stat = "Bitcoin node offSync %i blocks" % diff
+            push_to_phone(stat)
+            print (stat)
+        else:
+            stat = "Bitcoin node Running OK, offset %i block" % diff
+            print (stat)
 # if bitcoin-cli is not responsing:
 
 
