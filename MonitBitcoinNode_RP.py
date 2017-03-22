@@ -1,7 +1,7 @@
 from subprocess import check_output
 from subprocess import CalledProcessError
 import os
-import urllib.request
+import urllib2
 from time import sleep, strftime
 from tendo import singleton
 me = singleton.SingleInstance()
@@ -94,8 +94,7 @@ def push_to_phone(txt):
 
 def checkstat():
     # get height of the latest block from btc.com
-    apiReadout = str(urllib.request.urlopen(
-        'https://chain.api.btc.com/v3/block/latest').read())
+    apiReadout = urllib2.urlopen('https://chain.api.btc.com/v3/block/latest').read()
     blockNumber = int(apiReadout[apiReadout.find(
         "height") + 8:apiReadout.find("height") + 14])
     # get height of the latest block from bitcoin-cli
