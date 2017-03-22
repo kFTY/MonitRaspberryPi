@@ -111,20 +111,19 @@ def checkstat():
         os.system('sudo reboot')
 
     if info.find("version") != -1:
-    	blockNumberCli = int(
-        	info[info.find("blocks") + 9:info.find("blocks") + 15])
+        blockNumberCli = int(
+            info[info.find("blocks") + 9:info.find("blocks") + 15])
 # in case fail: notify me
 # if running but off-sync over 3 blocks:
-    	diff = blockNumberCli - blockNumber
-	    if diff > 3:
-	        stat = "Bitcoin node offSync %i blocks" % diff
-	        push_to_phone(stat)
-	        print (stat)
-	    else:
-	        stat = "Bitcoin node Running OK, offset %i block" % diff
-	        print (stat)
+        diff = blockNumberCli - blockNumber
+            if diff > 3:
+                stat = "Bitcoin node offSync %i blocks" % diff
+                push_to_phone(stat)
+                print (stat)
+            else:
+                stat = "Bitcoin node Running OK, offset %i block" % diff
+                print (stat)
 # if bitcoin-cli is not responsing:
-    
 
 
 # Upgrade time?
