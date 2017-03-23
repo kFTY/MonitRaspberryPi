@@ -125,7 +125,7 @@ def checkstat():
 
     if info == "error":
         os.system(
-            'cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak')
+            'sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak')
         if getErrorNumber() > allowedErrorNumber:
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
