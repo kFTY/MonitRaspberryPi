@@ -94,7 +94,7 @@ def push_to_phone(txt):
     os.system('/usr/bin/pushbullet.sh "%s"' % txt)
 
 def getErrorNumber():
-    errorfile = open("bitcoin_error.txt", "r", -1, 'utf-8')
+    errorfile = open("bitcoin_error.txt", "r", 'utf-8')
     errornumber = errorfile.readline(1)
     errorfile.close()
     return int(errornumber)
@@ -103,13 +103,13 @@ def getErrorNumber():
 def increaseErrorNumber(n):
     errornumber = getErrorNumber()
     errornumber += n
-    errorfile = open("bitcoin_error.txt", "w", -1, "utf-8")
+    errorfile = open("bitcoin_error.txt", "w", "utf-8")
     errorfile.write(str(errornumber))
     errorfile.close()
 
 
 def zeroErrorNumber():
-    errorfile = open("bitcoin_error.txt", "w", -1, "utf-8")
+    errorfile = open("bitcoin_error.txt", "w", "utf-8")
     errorfile.write("0")
     errorfile.close()
 
