@@ -6,6 +6,8 @@ from time import sleep, strftime
 from tendo import singleton
 me = singleton.SingleInstance()
 
+allowedErrorNumber = 20
+
 stat = ""
 upgrade = False
 print (strftime("%Y-%m-%d %H:%M:%S"))
@@ -91,6 +93,26 @@ def push_to_phone(txt):
     txt = str(txt)
     os.system('/usr/bin/pushbullet.sh "%s"' % txt)
 
+def getErrorNumber():
+    errorfile = open("bitcoin_error.txt", "r", -1, 'utf-8')
+    errornumber = errorfile.readline(1)
+    errorfile.close()
+    return int(errornumber)
+
+
+def increaseErrorNumber(n):
+    errornumber = getErrorNumber()
+    errornumber += n
+    errorfile = open("bitcoin_error.txt", "w", -1, "utf-8")
+    errorfile.write(str(errornumber))
+    errorfile.close()
+
+
+def zeroErrorNumber():
+    errorfile = open("bitcoin_error.txt", "w", -1, "utf-8")
+    errorfile.write("0")
+    errorfile.close()
+
 
 def checkstat():
     # get height of the latest block from btc.com
@@ -102,12 +124,20 @@ def checkstat():
     print (info)
 
     if info == "error":
-        stat = "Bitcoin node restarting"
-        push_to_phone(stat)
-        print (stat)
         os.system(
             'cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak')
-        os.system('sudo reboot')
+        if getErrorNumber() > allowedErrorNumber:
+            stat = "Bitcoin node restarting"
+            push_to_phone(stat)
+            print (stat)
+            os.system('sudo reboot')
+        else:
+            os.system("sudo bitcoind -daemon -datadir=/home/pi/DV3/Coin -conf=/home/pi/.bitcoin/bitcoin.conf")
+            increaseErrorNumber(5)
+            stat = "Bitcoin node restarting"
+            push_to_phone(stat)
+            print (stat)
+
 
     if info.find("version") != -1:
         blockNumberCli = int(
@@ -119,9 +149,16 @@ def checkstat():
             stat = "Bitcoin node offSync %i blocks" % diff
             push_to_phone(stat)
             print (stat)
+            increaseErrorNumber(1)
+            if getErrorNumber() > allowedErrorNumber:
+                stat = "Bitcoin node restarting"
+                push_to_phone(stat)
+                print (stat)
+                os.system('sudo reboot')
         else:
             stat = "Bitcoin node Running OK, offset %i block" % diff
             print (stat)
+            zeroErrorNumber()
 # if bitcoin-cli is not responsing:
 
 
