@@ -2,7 +2,7 @@ from subprocess import check_output
 from subprocess import CalledProcessError
 import os
 import urllib2
-from time import sleep, strftime
+from time import strftime
 from tendo import singleton
 me = singleton.SingleInstance()
 
@@ -98,7 +98,7 @@ def checkstat():
         else:
             stat = "Bitcoin node Running OK, offset %i block" % diff
             print (stat)
-            zeroErrorNumber() # everything is fine
+            zeroErrorNumber()  # everything is fine
 
 
 # Start check:
