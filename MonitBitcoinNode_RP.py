@@ -127,7 +127,7 @@ def checkstat():
         os.system(
             'sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak')
         if getErrorNumber() > allowedErrorNumber:
-            stat = "Bitcoin node restarting"
+            stat = "RaspberryPi restarting"
             push_to_phone(stat)
             print (stat)
             os.system('sudo reboot')
@@ -151,7 +151,7 @@ def checkstat():
             print (stat)
             increaseErrorNumber(1)
             if getErrorNumber() > allowedErrorNumber:
-                stat = "Bitcoin node restarting"
+                stat = "RaspberryPi restarting"
                 push_to_phone(stat)
                 print (stat)
                 os.system('sudo reboot')
