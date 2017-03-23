@@ -12,7 +12,7 @@ allowedErrorNumber = 20
 stat = ""
 cmd_getinfo = "bitcoin-cli getinfo"
 cmd_backuplog = "sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak"
-cmd_startnode = "sudo bitcoind -daemon -datadir=/home/pi/DV3/Coin -conf=/home/pi/.bitcoin/bitcoin.conf"
+cmd_startnode = "sudo bitcoind -daemon"
 cmd_reboot = "sudo reboot"
 
 
@@ -36,7 +36,7 @@ def push_to_phone(txt):
 
 
 def getErrorNumber():
-    errorfile = open("bitcoin_error.txt", "r")
+    errorfile = open("/tmp/bitcoin_error.txt", "r")
     errornumber = errorfile.readline(1)
     errorfile.close()
     return int(errornumber)
@@ -45,13 +45,13 @@ def getErrorNumber():
 def increaseErrorNumber(n):
     errornumber = getErrorNumber()
     errornumber += n
-    errorfile = open("bitcoin_error.txt", "w")
+    errorfile = open("/tmp/bitcoin_error.txt", "w")
     errorfile.write(str(errornumber))
     errorfile.close()
 
 
 def zeroErrorNumber():
-    errorfile = open("bitcoin_error.txt", "w")
+    errorfile = open("/tmp/bitcoin_error.txt", "w")
     errorfile.write("0")
     errorfile.close()
 
