@@ -6,82 +6,23 @@ from time import sleep, strftime
 from tendo import singleton
 me = singleton.SingleInstance()
 
-allowedErrorNumber = 20
-
-stat = ""
-upgrade = False
+# Initialize
 print (strftime("%Y-%m-%d %H:%M:%S"))
+allowedErrorNumber = 20
+stat = ""
+cmd_getinfo = "bitcoin-cli getinfo"
+cmd_backuplog = "sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak"
+cmd_startnode = "sudo bitcoind -daemon -datadir=/home/pi/DV3/Coin -conf=/home/pi/.bitcoin/bitcoin.conf"
+cmd_reboot = "sudo reboot"
 
 
-def upgradedev():
-    print ("Start to pull from Github.com")
-    try:
-        os.system("bitcoin-cli stop")
-    except:
-        print ("API not answering.")
-    try:
-        print ("Starting autogen")
-    except CalledProcessError as e:
-        print(e.output)
-    try:
-        print (check_output("/home/pi/buildgit/bu-dev/autogen.sh",
-                            shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    print ("Starting config")
-    try:
-        print (check_output(
-            "/home/pi/buildgit/bu-dev/configure --disable-wallet --without-gui", shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    sleep(5)
-    print ("Starting make")
-    try:
-        print (check_output("make", shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    # not sure if we need a directory setting here,
-    #  "make --directory=/home/pi/buildgit/bu-dev/")
-    sleep(5)
-    print ("Starting install")
-    # not sure if we need a directory setting here,
-    try:
-        print (check_output("sudo make install", shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    print ("Starting strip")
-    try:
-        print (check_output("sudo strip bitcoind", shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    try:
-        print (check_output("sudo strip bitcoin-cli", shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    try:
-        print (check_output(
-            '/usr/bin/pushbullet.sh "New version of dev installed"', shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        print(e.output)
-    # try:
-    #    print (check_output("sudo reboot", shell=True).decode("UTF-8"))
-    # except CalledProcessError as e:
-    #    print(e.output)
+def run(cmd):
+    return(check_output("%s" % cmd, shell=True).decode("UTF-8"))
 
 
 def get_info():
     try:
-        return(check_output("bitcoin-cli getinfo", shell=True).decode("UTF-8"))
-    except CalledProcessError as e:
-        error = e.output
-        if error.find("code") == -1:
-            error = "error"
-        return (error)
-
-
-def get_mempool():
-    try:
-        return(check_output("bitcoin-cli getmempoolinfo", shell=True).decode("UTF-8"))
+        return(run(cmd_getinfo))
     except CalledProcessError as e:
         error = e.output
         if error.find("code") == -1:
@@ -91,7 +32,8 @@ def get_mempool():
 
 def push_to_phone(txt):
     txt = str(txt)
-    os.system('/usr/bin/pushbullet.sh "%s"' % txt)
+    os.system('/usr/bin/pushbullet.sh "%s" &> /dev/null' % txt)
+
 
 def getErrorNumber():
     errorfile = open("bitcoin_error.txt", "r")
@@ -116,68 +58,48 @@ def zeroErrorNumber():
 
 def checkstat():
     # get height of the latest block from btc.com
-    apiReadout = urllib2.urlopen('https://chain.api.btc.com/v3/block/latest').read()
+    apiReadout = urllib2.urlopen(
+        'https://chain.api.btc.com/v3/block/latest').read()
     blockNumber = int(apiReadout[apiReadout.find(
         "height") + 8:apiReadout.find("height") + 14])
     # get height of the latest block from bitcoin-cli
     info = str(get_info())
     print (info)
-
-    if info == "error":
-        os.system(
-            'sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak')
+    # cases:
+    if info == "error":  # no response
+        run(cmd_backuplog)
         if getErrorNumber() > allowedErrorNumber:
+            # get too many error already, reboot
             stat = "RaspberryPi restarting"
             push_to_phone(stat)
             print (stat)
-            os.system('sudo reboot')
-        else:
-            os.system("sudo bitcoind -daemon -datadir=/home/pi/DV3/Coin -conf=/home/pi/.bitcoin/bitcoin.conf")
+            run(cmd_reboot)
+        else:  # try restart bitcoind
+            run(cmd_startnode)
             increaseErrorNumber(5)
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
             print (stat)
-
-
-    if info.find("version") != -1:
+    if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
-# in case fail: notify me
-# if running but off-sync over 3 blocks:
         diff = blockNumberCli - blockNumber
-        if diff > 3:
+        if diff > 3:  # off sync over 3 blocks, abnormal
             stat = "Bitcoin node offSync %i blocks" % diff
             push_to_phone(stat)
             print (stat)
-            increaseErrorNumber(1)
+            increaseErrorNumber(1)  # add error score
             if getErrorNumber() > allowedErrorNumber:
+                # get too many error already, reboot
                 stat = "RaspberryPi restarting"
                 push_to_phone(stat)
                 print (stat)
-                os.system('sudo reboot')
+                run(cmd_reboot)
         else:
             stat = "Bitcoin node Running OK, offset %i block" % diff
             print (stat)
-            zeroErrorNumber()
-# if bitcoin-cli is not responsing:
+            zeroErrorNumber() # everything is fine
 
 
-# Upgrade time?
-isupgradeTime = int(strftime("%H")) == 2
-if isupgradeTime:
-    isnewVersion = str(check_output(
-        "git -C /home/pi/buildgit/bu-dev pull", shell=True).decode("UTF-8")).find("up-to-date") == -1
-
-if isupgradeTime and isnewVersion:
-    upgrade = True
-    #print ("upgrade start")
-
-if isupgradeTime and (not upnewVersion):
-    upgrade = False
-    print ("Nothing new, abort upgrade")
-
-if upgrade:
-   # upgradedev()
-    checkstat()
-else:
-    checkstat()
+# Start check:
+checkstat()
