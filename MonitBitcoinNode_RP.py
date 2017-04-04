@@ -17,7 +17,7 @@ cmd_reboot = "sudo reboot"
 
 
 def run(cmd):
-    return(check_output(cmd).decode("UTF-8"))
+    return(check_output(cmd, shell=True).decode("UTF-8"))
 
 
 def get_info():
@@ -60,7 +60,7 @@ def checkstat():
     blockNumber = int(apiReadout[apiReadout.find(
         "height") + 8:apiReadout.find("height") + 14])
     # get height of the latest block from bitcoin-cli
-    info = "error"
+    info = ""
     info = str(get_info())
     print (info)
     # cases:
