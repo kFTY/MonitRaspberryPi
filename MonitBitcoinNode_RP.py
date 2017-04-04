@@ -12,7 +12,7 @@ allowedErrorNumber = 20
 stat = ""
 cmd_getinfo = "bitcoin-cli getinfo"
 cmd_backuplog = "sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak"
-cmd_startnode = "sudo bitcoind -daemon &"
+cmd_startnode = "sudo bitcoind -daemon"
 cmd_reboot = "sudo reboot"
 
 
@@ -23,8 +23,11 @@ def run(cmd):
 def get_info():
     try:
         return(run(cmd_getinfo))
-    except:
-        return ("error")
+    except CalledProcessError as e:
+        error = e.output
+        if error.find("code") == -1:
+            error = "error"
+        return (error)
 
 
 def push_to_phone(txt):
@@ -63,12 +66,12 @@ def checkstat():
     info = str(get_info())
     print (info)
     # cases:
-    if info.find("version") == -1:  # no response
-        # run(cmd_backuplog)
+    if info == "error":  # no response
+        run(cmd_backuplog)
         if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
             stat = "RaspberryPi restarting"
-           # push_to_phone(stat)
+            push_to_phone(stat)
             print (stat)
             run(cmd_reboot)
         else:  # try restart bitcoind
@@ -77,8 +80,7 @@ def checkstat():
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
             print (stat)
-            quit()
-    else:  # can find version information
+    if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
         diff = blockNumberCli - blockNumber
@@ -101,4 +103,3 @@ def checkstat():
 
 # Start check:
 checkstat()
-quit()
