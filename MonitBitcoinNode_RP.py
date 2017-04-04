@@ -12,12 +12,12 @@ allowedErrorNumber = 20
 stat = ""
 cmd_getinfo = "bitcoin-cli getinfo"
 cmd_backuplog = "sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak"
-cmd_startnode = "sudo bitcoind -daemon &"
+cmd_startnode = "sudo bitcoind -daemon"
 cmd_reboot = "sudo reboot"
 
 
 def run(cmd):
-    return(check_output("%s" % cmd, shell=True).decode("UTF-8"))
+    return(check_output(cmd, shell=True).decode("UTF-8"))
 
 
 def get_info():
@@ -68,7 +68,7 @@ def checkstat():
         if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
             stat = "RaspberryPi restarting"
-           # push_to_phone(stat)
+            push_to_phone(stat)
             print (stat)
             run(cmd_reboot)
         else:  # try restart bitcoind
