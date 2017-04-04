@@ -67,7 +67,7 @@ def checkstat():
     print (info)
     # cases:
     if info == "error":  # no response
-        run(cmd_backuplog)
+        # run(cmd_backuplog)
         if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
             stat = "RaspberryPi restarting"
