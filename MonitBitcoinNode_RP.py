@@ -26,7 +26,7 @@ def get_info():
     except CalledProcessError as e:
         error = e.output
         if error.find("code") == -1:
-            error = "error"
+            error = "Need to wait"
         return (error)
 
 
@@ -80,6 +80,8 @@ def checkstat():
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
             print (stat)
+    if info == "Need to wait":
+        increaseErrorNumber(1)
     if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
