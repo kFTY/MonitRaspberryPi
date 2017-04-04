@@ -60,7 +60,6 @@ def checkstat():
     blockNumber = int(apiReadout[apiReadout.find(
         "height") + 8:apiReadout.find("height") + 14])
     # get height of the latest block from bitcoin-cli
-    info = ""
     info = str(get_info())
     print (info)
     # cases:
