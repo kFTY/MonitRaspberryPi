@@ -77,6 +77,7 @@ def checkstat():
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
             print (stat)
+            quit()
     else:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
