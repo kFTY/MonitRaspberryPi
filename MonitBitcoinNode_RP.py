@@ -68,7 +68,7 @@ def checkstat():
         if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
             stat = "RaspberryPi restarting"
-            push_to_phone(stat)
+           # push_to_phone(stat)
             print (stat)
             run(cmd_reboot)
         else:  # try restart bitcoind
