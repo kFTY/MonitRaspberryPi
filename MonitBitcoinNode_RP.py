@@ -23,13 +23,8 @@ def run(cmd):
 def get_info():
     try:
         return(run(cmd_getinfo))
-    except CalledProcessError as e:
-        error = e.output
-        if error.find("code") != -1:
-            error = "Need to wait"
-        else:
-            error = "error"
-        return (error)
+    except:
+        return ("error")
 
 
 def push_to_phone(txt):
@@ -68,7 +63,7 @@ def checkstat():
     info = str(get_info())
     print (info)
     # cases:
-    if info == "error":  # no response
+    if info.find("version") == -1:  # no response
         # run(cmd_backuplog)
         if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
@@ -82,9 +77,7 @@ def checkstat():
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
             print (stat)
-    if info == "Need to wait":
-        increaseErrorNumber(1)
-    if info.find("version") != -1:  # can find version information
+    else:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
         diff = blockNumberCli - blockNumber
