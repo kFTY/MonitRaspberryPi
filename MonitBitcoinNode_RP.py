@@ -74,12 +74,9 @@ def checkstat():
             run(cmd_reboot)
         else:  # try restart bitcoind
             run(cmd_startnode)
-            print("run(cmd_startnode)")
             increaseErrorNumber(5)
-            print("increaseErrorNumber(5)")
             stat = "Bitcoin node restarting"
             push_to_phone(stat)
-            print("stat = Bitcoin node restarting")
             print (stat)
             quit()
     else:  # can find version information
