@@ -28,7 +28,7 @@ def get_info():
         if error.find("code") != -1:
             error = "Need to wait"
         else:
-            error = "Error"
+            error = "error"
         return (error)
 
 
