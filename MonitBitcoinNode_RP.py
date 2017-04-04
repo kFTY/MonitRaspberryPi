@@ -100,3 +100,4 @@ def checkstat():
 
 # Start check:
 checkstat()
+quit()
