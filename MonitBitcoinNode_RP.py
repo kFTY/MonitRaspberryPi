@@ -25,8 +25,10 @@ def get_info():
         return(run(cmd_getinfo))
     except CalledProcessError as e:
         error = e.output
-        if error.find("code") == -1:
+        if error.find("code") != -1:
             error = "Need to wait"
+        else:
+            error = "Error"
         return (error)
 
 
