@@ -11,7 +11,6 @@ print (strftime("%Y-%m-%d %H:%M:%S"))
 allowedErrorNumber = 20
 stat = ""
 cmd_getinfo = "bitcoin-cli getinfo"
-cmd_backuplog = "sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak"
 cmd_startnode = "sudo bitcoind -daemon"
 cmd_reboot = "sudo reboot"
 
@@ -67,7 +66,6 @@ def checkstat():
     print (info)
     # cases:
     if info == "error":  # no response
-        run(cmd_backuplog)
         if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
             stat = "RaspberryPi restarting"
