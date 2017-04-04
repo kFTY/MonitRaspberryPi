@@ -12,7 +12,7 @@ allowedErrorNumber = 20
 stat = ""
 cmd_getinfo = "bitcoin-cli getinfo"
 cmd_backuplog = "sudo cp -f /home/pi/DV3/Coin/debug.log /home/pi/DV3/Coin/debug.log.bak"
-cmd_startnode = "sudo bitcoind -daemon"
+cmd_startnode = "sudo bitcoind -daemon &"
 cmd_reboot = "sudo reboot"
 
 
