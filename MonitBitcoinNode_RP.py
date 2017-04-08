@@ -35,7 +35,7 @@ def push_to_phone(txt):
 
 
 def getErrorNumber():
-    errorfile = open("/tmp/bitcoin_error.txt", "r")
+    errorfile = open("/bitcoin_error.txt", "r")
     errornumber = errorfile.readline(1)
     errorfile.close()
     return int(errornumber)
@@ -44,13 +44,13 @@ def getErrorNumber():
 def increaseErrorNumber(n):
     errornumber = getErrorNumber()
     errornumber += n
-    errorfile = open("/tmp/bitcoin_error.txt", "w")
+    errorfile = open("/bitcoin_error.txt", "w")
     errorfile.write(str(errornumber))
     errorfile.close()
 
 
 def zeroErrorNumber():
-    errorfile = open("/tmp/bitcoin_error.txt", "w")
+    errorfile = open("/bitcoin_error.txt", "w")
     errorfile.write("0")
     errorfile.close()
 
