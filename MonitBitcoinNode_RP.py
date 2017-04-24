@@ -3,8 +3,8 @@ from subprocess import CalledProcessError
 import os
 import urllib2
 from time import strftime
-from tendo import singleton
-me = singleton.SingleInstance()
+# from tendo import singleton
+# me = singleton.SingleInstance()
 
 # Initialize
 print (strftime("%Y-%m-%d %H:%M:%S"))
