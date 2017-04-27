@@ -84,9 +84,9 @@ def checkstat():
         diff = blockNumberCli - blockNumber
         if diff > 3:  # off sync over 3 blocks, abnormal
             stat = "Bitcoin node offSync %i blocks" % diff
-            push_to_phone(stat)
-            print (stat)
-            increaseErrorNumber(1)  # add error score
+            #push_to_phone(stat)
+            #print (stat)
+            #increaseErrorNumber(1)  # add error score
             if getErrorNumber() > allowedErrorNumber:
                 # get too many error already, reboot
                 stat = "RaspberryPi restarting"
