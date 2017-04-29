@@ -84,7 +84,7 @@ def checkstat():
         diff = blockNumber - blockNumberCli
         if diff > 6:  # off sync over 6 blocks, abnormal
             stat = "Bitcoin node offSync %d blocks" % diff
-            push_to_phone(stat)
+            #push_to_phone(stat)
             print (stat)
             # increaseErrorNumber(1)  # add error score
             if getErrorNumber() > allowedErrorNumber:
