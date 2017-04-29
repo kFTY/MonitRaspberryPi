@@ -35,7 +35,7 @@ def push_to_phone(txt):
 
 
 def getErrorNumber():
-    errorfile = open("/bcoin_error.txt", "r")
+    errorfile = open("/home/pi/bcoin_error.txt", "r")
     errornumber = errorfile.readline(1)
     errorfile.close()
     return int(errornumber)
@@ -44,13 +44,13 @@ def getErrorNumber():
 def increaseErrorNumber(n):
     errornumber = getErrorNumber()
     errornumber += n
-    errorfile = open("/bcoin_error.txt", "w")
+    errorfile = open("/home/pi/bcoin_error.txt", "w")
     errorfile.write(str(errornumber))
     errorfile.close()
 
 
 def zeroErrorNumber():
-    errorfile = open("/bcoin_error.txt", "w")
+    errorfile = open("/home/pi/bcoin_error.txt", "w")
     errorfile.write("0")
     errorfile.close()
 
@@ -81,20 +81,18 @@ def checkstat():
     if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
             info[info.find("height") + 9:info.find("height") + 15])
-        diff =  blockNumber - blockNumberCli
-        if diff > 3:  # off sync over 3 blocks, abnormal
+        diff = blockNumber - blockNumberCli
+        if diff > 6:  # off sync over 6 blocks, abnormal
             stat = "Bcoin node offSync %d blocks" % diff
-            '''
             push_to_phone(stat)
             print (stat)
-            increaseErrorNumber(1)  # add error score
+            # increaseErrorNumber(1)  # add error score
             if getErrorNumber() > allowedErrorNumber:
                 # get too many error already, reboot
                 stat = "RaspberryPi restarting"
                 push_to_phone(stat)
                 print (stat)
                 run(cmd_reboot)
-            '''
         else:
             stat = "Bcoin node Running OK, offset %d block" % diff
             print (stat)
