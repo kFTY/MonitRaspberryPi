@@ -81,9 +81,9 @@ def checkstat():
     if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
-        diff = blockNumberCli - blockNumber
+        diff =  blockNumber - blockNumberCli
         if diff > 3:  # off sync over 3 blocks, abnormal
-            stat = "Bitcoin node offSync %i blocks" % diff
+            stat = "Bitcoin node offSync %d blocks" % diff
             '''
             push_to_phone(stat)
             print (stat)
@@ -96,7 +96,7 @@ def checkstat():
                 run(cmd_reboot)
             '''
         else:
-            stat = "Bitcoin node Running OK, offset %i block" % diff
+            stat = "Bitcoin node Running OK, offset %d block" % diff
             print (stat)
             zeroErrorNumber()  # everything is fine
 
