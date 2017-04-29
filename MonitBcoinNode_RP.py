@@ -83,7 +83,7 @@ def checkstat():
             info[info.find("height") + 9:info.find("height") + 15])
         diff = blockNumberCli - blockNumber
         if diff > 3:  # off sync over 3 blocks, abnormal
-            stat = "Bcoin node offSync %i blocks" % diff
+            stat = "Bcoin node offSync %d blocks" % diff
             '''
             push_to_phone(stat)
             print (stat)
@@ -96,7 +96,7 @@ def checkstat():
                 run(cmd_reboot)
             '''
         else:
-            stat = "Bcoin node Running OK, offset %i block" % diff
+            stat = "Bcoin node Running OK, offset %d block" % diff
             print (stat)
             zeroErrorNumber()  # everything is fine
 
