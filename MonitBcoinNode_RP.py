@@ -10,8 +10,8 @@ from time import strftime
 print (strftime("%Y-%m-%d %H:%M:%S"))
 allowedErrorNumber = 20
 stat = ""
-cmd_getinfo = "bitcoin-cli getinfo"
-cmd_startnode = "sudo bitcoind -daemon"
+cmd_getinfo = "curl 127.1:7332"
+cmd_startnode = "bcoin --daemon"
 cmd_reboot = "sudo reboot"
 
 
@@ -35,7 +35,7 @@ def push_to_phone(txt):
 
 
 def getErrorNumber():
-    errorfile = open("/bitcoin_error.txt", "r")
+    errorfile = open("/bcoin_error.txt", "r")
     errornumber = errorfile.readline(1)
     errorfile.close()
     return int(errornumber)
@@ -44,13 +44,13 @@ def getErrorNumber():
 def increaseErrorNumber(n):
     errornumber = getErrorNumber()
     errornumber += n
-    errorfile = open("/bitcoin_error.txt", "w")
+    errorfile = open("/bcoin_error.txt", "w")
     errorfile.write(str(errornumber))
     errorfile.close()
 
 
 def zeroErrorNumber():
-    errorfile = open("/bitcoin_error.txt", "w")
+    errorfile = open("/bcoin_error.txt", "w")
     errorfile.write("0")
     errorfile.close()
 
@@ -72,18 +72,18 @@ def checkstat():
             push_to_phone(stat)
             print (stat)
             run(cmd_reboot)
-        else:  # try restart bitcoind
+        else:  # try restart bcoind
             run(cmd_startnode)
             increaseErrorNumber(5)
-            stat = "Bitcoin node restarting"
+            stat = "Bcoin node restarting"
             push_to_phone(stat)
             print (stat)
     if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
-            info[info.find("blocks") + 9:info.find("blocks") + 15])
+            info[info.find("height") + 9:info.find("height") + 15])
         diff = blockNumberCli - blockNumber
         if diff > 3:  # off sync over 3 blocks, abnormal
-            stat = "Bitcoin node offSync %i blocks" % diff
+            stat = "Bcoin node offSync %i blocks" % diff
             '''
             push_to_phone(stat)
             print (stat)
@@ -96,7 +96,7 @@ def checkstat():
                 run(cmd_reboot)
             '''
         else:
-            stat = "Bitcoin node Running OK, offset %i block" % diff
+            stat = "Bcoin node Running OK, offset %i block" % diff
             print (stat)
             zeroErrorNumber()  # everything is fine
 
