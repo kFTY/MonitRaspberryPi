@@ -1,10 +1,8 @@
 from subprocess import check_output
 from subprocess import CalledProcessError
 import os
-import urllib2
+import urllib.request
 from time import strftime
-# from tendo import singleton
-# me = singleton.SingleInstance()
 
 # Initialize
 print (strftime("%Y-%m-%d %H:%M:%S"))
@@ -57,8 +55,8 @@ def zeroErrorNumber():
 
 def checkstat():
     # get height of the latest block from btc.com
-    apiReadout = urllib2.urlopen(
-        'https://chain.api.btc.com/v3/block/latest').read()
+    apiReadout = str(urllib.request.urlopen(
+        'https://chain.api.btc.com/v3/block/latest').read())
     blockNumber = int(apiReadout[apiReadout.find(
         "height") + 8:apiReadout.find("height") + 14])
     # get height of the latest block from bitcoin-cli
