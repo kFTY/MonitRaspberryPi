@@ -20,11 +20,8 @@ def run(cmd):
 def get_info():
     try:
         return(run(cmd_getinfo))
-    except CalledProcessError as e:
-        error = e.output
-        if error.find("code") == -1:
-            error = "error"
-        return (error)
+    except:
+        return ("error")
 
 
 def push_to_phone(txt):
@@ -82,7 +79,7 @@ def checkstat():
         diff = blockNumber - blockNumberCli
         if diff > 6:  # off sync over 6 blocks, abnormal
             stat = "Bitcoin node offSync %d blocks" % diff
-            #push_to_phone(stat)
+            # push_to_phone(stat)
             print (stat)
             # increaseErrorNumber(1)  # add error score
             if getErrorNumber() > allowedErrorNumber:
