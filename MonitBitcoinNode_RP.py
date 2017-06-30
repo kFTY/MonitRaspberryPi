@@ -1,5 +1,5 @@
 from subprocess import check_output
-from subprocess import CalledProcessError
+# from subprocess import CalledProcessError
 import os
 import urllib.request
 from time import strftime
@@ -9,7 +9,7 @@ print (strftime("%Y-%m-%d %H:%M:%S"))
 allowedErrorNumber = 20
 stat = ""
 cmd_getinfo = "bitcoin-cli getinfo"
-cmd_startnode = "sudo bitcoind -daemon"
+cmd_startnode = "bitcoind"
 cmd_reboot = "sudo reboot"
 
 
@@ -20,7 +20,7 @@ def run(cmd):
 def get_info():
     try:
         return(run(cmd_getinfo))
-    except:
+    except ValueError:
         return ("error")
 
 
@@ -60,34 +60,27 @@ def checkstat():
     info = str(get_info())
     print (info)
     # cases:
-    if info == "error":  # no response
-        if getErrorNumber() > allowedErrorNumber:
+    if getErrorNumber() > allowedErrorNumber:
             # get too many error already, reboot
-            stat = "RaspberryPi restarting"
-            push_to_phone(stat)
-            print (stat)
-            run(cmd_reboot)
-        else:  # try restart bitcoind
-            run(cmd_startnode)
-            increaseErrorNumber(5)
-            stat = "Bitcoin node restarting"
-            push_to_phone(stat)
-            print (stat)
+        stat = "RaspberryPi restarting"
+        push_to_phone(stat)
+        print (stat)
+        run(cmd_reboot)
+    if info == "error":  # no response
+        increaseErrorNumber(2)  # add error score
+        run(cmd_startnode)
+        stat = "Bitcoin node restarting"
+        push_to_phone(stat)
+        print (stat)
     if info.find("version") != -1:  # can find version information
         blockNumberCli = int(
             info[info.find("blocks") + 9:info.find("blocks") + 15])
         diff = blockNumber - blockNumberCli
         if diff > 6:  # off sync over 6 blocks, abnormal
-            stat = "Bitcoin node offSync %d blocks" % diff
-            # push_to_phone(stat)
+            stat = "Bitcoin node Running, offSync %d blocks" % diff
+            push_to_phone(stat)
             print (stat)
-            # increaseErrorNumber(1)  # add error score
-            if getErrorNumber() > allowedErrorNumber:
-                # get too many error already, reboot
-                stat = "RaspberryPi restarting"
-                push_to_phone(stat)
-                print (stat)
-                run(cmd_reboot)
+            increaseErrorNumber(1)  # add error score
         else:
             stat = "Bitcoin node Running OK, offset %d block" % diff
             print (stat)
