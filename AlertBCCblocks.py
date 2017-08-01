@@ -11,12 +11,9 @@ def findblockheight():
     except:
         print ("error")
     outputfile = open("info.txt", "r", -1, 'utf-8').read()
-    print (outputfile)
-    # print (outputfile.read())
-
     blockheight = re.search(
         r"(Node: Bitcoin ABC)(.*)\n.*\n.*\n.*(height: )(\d{6})", outputfile).group(4)
-    print (blockheight)
+    outputfile.close()
     return int(blockheight)
 
 
