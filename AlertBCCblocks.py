@@ -16,7 +16,7 @@ def findblockheight():
     blockheight = re.search(
         r"(Node: Bitcoin ABC)(.*)\n.*\n.*\n.*(height: )(\d{6})", outputfile).group(4)
     print (blockheight)
-    return blockheight
+    return int(blockheight)
 
 
 def push_to_phone(txt):
@@ -26,8 +26,8 @@ def push_to_phone(txt):
 
 blocktip = 0
 while True:
-    time.sleep(60)
     blockheight = findblockheight()
     if blockheight > blocktip:
         blocktip = blockheight
         push_to_phone("New BCC block %d" % blocktip)
+    time.sleep(60)
