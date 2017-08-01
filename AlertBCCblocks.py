@@ -10,9 +10,10 @@ def findblockheight():
         urllib.request.urlretrieve(url, "info.txt")
     except:
         print ("error")
-    outputfile = open("info.txt", "r", -1, 'utf-8').read()
+    outputfile = open("info.txt", "r", -1, 'utf-8')
+    data = outputfile.read()
     blockheight = re.search(
-        r"(Node: Bitcoin ABC)(.*)\n.*\n.*\n.*(height: )(\d{6})", outputfile).group(4)
+        r"(Node: Bitcoin ABC)(.*)\n.*\n.*\n.*(height: )(\d{6})", data).group(4)
     outputfile.close()
     return int(blockheight)
 
